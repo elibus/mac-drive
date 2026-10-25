@@ -60,6 +60,14 @@
 			</dict>
 			<dict>
 				<key>NSExtensionFileProviderActionActivationRule</key>
+				<string>SUBQUERY ( fileproviderItems, $item, ($item.itemIdentifier != "NSFileProviderRootContainerItemIdentifier" &amp;&amp; $item.isUploaded == YES ) ).@count &gt; 0</string>
+				<key>NSExtensionFileProviderActionIdentifier</key>
+				<string>ch.protonmail.drive.fileprovider.action.copy_public_link</string>
+				<key>NSExtensionFileProviderActionName</key>
+				<string>Copy Public Link</string>
+			</dict>
+			<dict>
+				<key>NSExtensionFileProviderActionActivationRule</key>
 				<string>TRUEPREDICATE</string>
 				<key>NSExtensionFileProviderActionIdentifier</key>
 				<string>ch.protonmail.drive.fileprovider.action.refresh</string>
