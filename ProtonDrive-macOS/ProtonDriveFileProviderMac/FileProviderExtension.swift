@@ -50,7 +50,7 @@ class FileProviderExtension: NSObject, NSFileProviderReplicatedExtension, NSFile
     private lazy var syncReporter = SyncReporter(tower: tower, manager: manager)
 
     private var fileProviderOperations: FileProviderOperationsProtocol!
-    private var progresses = FileOperationProgresses()
+    var progresses = FileOperationProgresses()
     private var globalProgressServiceSource: GlobalProgressXPCServiceSource?
 
     private lazy var itemProvider = ItemProvider()
@@ -892,7 +892,7 @@ extension FileProviderExtension {
             return forceRefresh(identifier: actionIdentifier, itemsWithIdentifiers: itemIdentifiers, moc: moc, completionHandler: completionHandler)
         case "ch.protonmail.drive.fileprovider.action.open_in_browser":
             return openInBrowser(identifier: actionIdentifier, itemsWithIdentifiers: itemIdentifiers, moc: moc, completionHandler: completionHandler)
-        case "ch.protonmail.drive.fileprovider.action.copy_public_link":
+        case Self.copyPublicLinkActionIdentifier:
             return copyPublicLink(itemsWithIdentifiers: itemIdentifiers, completionBlockWrapper: completionBlockWrapper)
         default:
             assertionFailure("Unexpected action received")
@@ -1027,70 +1027,6 @@ extension FileProviderExtension {
 
         completionBlockWrapper(nil)
         return Progress(unitsOfWork: 0)
-    }
-
-    /// Creates (or reuses) a read-only public link for each item and puts the link(s) on the clipboard.
-    private func copyPublicLink(itemsWithIdentifiers itemIdentifiers: [NSFileProviderItemIdentifier],
-                                completionBlockWrapper: CompletionBlockWrapper<Error?, Void, Void, Void>) -> Progress {
-        Log.info("performAction copy_public_link for \(itemIdentifiers.count) item(s)", domain: .sharing)
-
-        let progress = Progress(totalUnitCount: Int64(itemIdentifiers.count))
-        let sharingManager = makeSharingManager()
-        let storage = tower.storage
-
-        Task {
-            do {
-                var links: [String] = []
-                for itemIdentifier in itemIdentifiers {
-                    guard let nodeIdentifier = NodeIdentifier(itemIdentifier) else { continue }
-
-                    let linkIdentifier = try await sharingManager.getPublicLink(for: nodeIdentifier, permissions: .read)
-
-                    let moc = storage.backgroundContext
-                    let link: String = try await moc.perform {
-                        guard let shareURL = ShareURL.fetch(id: linkIdentifier.id, in: moc) else {
-                            throw DriveError("Could not find the created public link.")
-                        }
-                        // The part of the password after the default size is the custom one, which is not part of the URL.
-                        let password = try shareURL.decryptPassword()
-                        let invariantPassword = String(password.prefix(PDCore.Constants.minSharedLinkRandomPasswordSize))
-                        return shareURL.publicUrl + "#" + invariantPassword
-                    }
-                    links.append(link)
-                    progress.completedUnitCount += 1
-                }
-
-                guard !links.isEmpty else {
-                    completionBlockWrapper(nil)
-                    return
-                }
-
-                await MainActor.run {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(links.joined(separator: "\n"), forType: .string)
-                }
-                Log.info("Copied \(links.count) public link(s) to the clipboard", domain: .sharing)
-                completionBlockWrapper(nil)
-            } catch {
-                Log.error("Copy public link failed", error: error, domain: .sharing)
-                completionBlockWrapper(error)
-            }
-        }
-        return progress
-    }
-
-    private func makeSharingManager() -> SharingManager {
-        let storage = tower.storage
-        let sessionVault = tower.sessionVault
-        let client = tower.client
-
-        let shareCreator = ShareCreator(storage: storage, sessionVault: sessionVault, cloudShareCreator: client.createShare, signersKitFactory: sessionVault, moc: storage.backgroundContext)
-        let publicLinkCreator = RemoteCachingPublicLinkCreator(client: client, storage: storage, signersKitFactory: sessionVault)
-        let publicLinkProvider = RemoteCachingPublicLinkProvider(client: client, storage: storage, shareCreator: shareCreator, publicLinkCreator: publicLinkCreator)
-        let publicLinkUpdater = RemoteCachingPublicLinkUpdater(client: client, storage: storage, signersKitFactory: sessionVault)
-        let shareDeleter = RemoteCachingShareDeleter(client: client, storage: storage)
-        let publicLinkDeleter = RemoteCachingPublicLinkDeleter(client: client, storage: storage, shareDeleter: shareDeleter)
-        return SharingManager(provider: publicLinkProvider, updater: publicLinkUpdater, deleter: publicLinkDeleter, shareDeleter: shareDeleter)
     }
 }
 

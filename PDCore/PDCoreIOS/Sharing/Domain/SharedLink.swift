@@ -40,7 +40,7 @@ public struct SharedLink: Equatable {
         self.customPassword = String(fullPassword.dropFirst(defaultPasswordSize))
         self.fullPassword = fullPassword
         self.publicUrl = publicUrl
-        self.link = publicUrl.appending("#" + invariantPassword)
+        self.link = PublicLinkFormat.link(publicUrl: publicUrl, fullPassword: fullPassword)
         self.isCustom = isCustom
         self.isLegacy = isLegacy
         self.publicLinkIdentifier = publicLinkIdentifier

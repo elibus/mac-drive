@@ -62,6 +62,17 @@ public final class SharingManager: SharedLinkRepository {
         self.shareDeleter = shareDeleter
     }
 
+    /// Composes the default remote-backed implementation used by the apps.
+    public static func make(client: Client, storage: StorageManager, sessionVault: SessionVault) -> SharingManager {
+        let shareCreator = ShareCreator(storage: storage, sessionVault: sessionVault, cloudShareCreator: client.createShare, signersKitFactory: sessionVault, moc: storage.backgroundContext)
+        let publicLinkCreator = RemoteCachingPublicLinkCreator(client: client, storage: storage, signersKitFactory: sessionVault)
+        let publicLinkProvider = RemoteCachingPublicLinkProvider(client: client, storage: storage, shareCreator: shareCreator, publicLinkCreator: publicLinkCreator)
+        let publicLinkUpdater = RemoteCachingPublicLinkUpdater(client: client, storage: storage, signersKitFactory: sessionVault)
+        let shareDeleter = RemoteCachingShareDeleter(client: client, storage: storage)
+        let publicLinkDeleter = RemoteCachingPublicLinkDeleter(client: client, storage: storage, shareDeleter: shareDeleter)
+        return SharingManager(provider: publicLinkProvider, updater: publicLinkUpdater, deleter: publicLinkDeleter, shareDeleter: shareDeleter)
+    }
+
     public func getPublicLink(
         for node: NodeIdentifier,
         permissions: ShareURLMeta.Permissions

@@ -114,6 +114,7 @@
 		AB71532824274EDA00543720 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB71532724274EDA00543720 /* Assets.xcassets */; };
 		AB71532B24274EDA00543720 /* Menu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB71532924274EDA00543720 /* Menu.storyboard */; };
 		ABD1909025A30FF7005D3E29 /* FileProviderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD1908F25A30FF7005D3E29 /* FileProviderExtension.swift */; };
+		A010EA06308EC30000281BF7 /* FileProviderExtension+PublicLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A010EA05308EC30000281BF7 /* FileProviderExtension+PublicLink.swift */; };
 		ABE2313125FF8147009FEAF7 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE2313025FF8147009FEAF7 /* AppCoordinator.swift */; };
 		D44B81ED2C71CE170074AD58 /* MemoryWarningObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44B81EC2C71CE170074AD58 /* MemoryWarningObserver.swift */; };
 		D44C325E2A30D11200D2BA77 /* QASettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44C325D2A30D11200D2BA77 /* QASettingsView.swift */; };
@@ -345,6 +346,7 @@
 		ABA9E243255930C100507BE3 /* PDFileSystemEvents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PDFileSystemEvents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABD1908D25A30FF7005D3E29 /* ProtonDriveFileProviderMac.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ProtonDriveFileProviderMac.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABD1908F25A30FF7005D3E29 /* FileProviderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProviderExtension.swift; sourceTree = "<group>"; };
+		A010EA05308EC30000281BF7 /* FileProviderExtension+PublicLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileProviderExtension+PublicLink.swift"; sourceTree = "<group>"; };
 		ABD1909525A30FF7005D3E29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ABD1909625A30FF7005D3E29 /* ProtonDriveFileProvider.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProtonDriveFileProvider.entitlements; sourceTree = "<group>"; };
 		ABD190B225A31107005D3E29 /* FileProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FileProvider.framework; path = System/Library/Frameworks/FileProvider.framework; sourceTree = SDKROOT; };
@@ -765,6 +767,7 @@
 			isa = PBXGroup;
 			children = (
 				ABD1908F25A30FF7005D3E29 /* FileProviderExtension.swift */,
+				A010EA05308EC30000281BF7 /* FileProviderExtension+PublicLink.swift */,
 				ABD1909525A30FF7005D3E29 /* Info.plist */,
 				ABD1909625A30FF7005D3E29 /* ProtonDriveFileProvider.entitlements */,
 				ABE234482600E693009FEAF7 /* BuildConfigs */,
@@ -1238,6 +1241,7 @@
 				72FFB9882E8179820013826F /* Metrics.xcdatamodeld in Sources */,
 				72FFB98B2E8179D60013826F /* DBPerformanceMeasurement.swift in Sources */,
 				ABD1909025A30FF7005D3E29 /* FileProviderExtension.swift in Sources */,
+				A010EA06308EC30000281BF7 /* FileProviderExtension+PublicLink.swift in Sources */,
 				A351697B2D10458C00651795 /* Constants.swift in Sources */,
 				726A96822EA67D1B00F698F2 /* PerformanceMeasurementEvent.swift in Sources */,
 				72ADD18B2E8ECF4100A7ABB3 /* DBPerformanceMeasurementRepository.swift in Sources */,

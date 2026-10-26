@@ -323,6 +323,8 @@ public class NodeItem: NSObject, NSFileProviderItem {
         var userInfo = [AnyHashable: Any]()
         userInfo["keep_downloaded"] = node.isMarkedOfflineAvailable
         userInfo["inherit_keep_downloaded"] = node.isInheritingOfflineAvailable
+        // Only the owner manages the public link of an item (see `NodeSharingPolicy.isOwner`).
+        userInfo["can_share_public_link"] = node.getNodeRole() == .owner
 
 #if os(macOS)
         let decorations = NodeItem.decorations(node)

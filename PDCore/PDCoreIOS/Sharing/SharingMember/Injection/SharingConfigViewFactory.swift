@@ -148,17 +148,7 @@ struct SharingConfigViewFactory {
     }
     
     private func makeSharedLinkRepository() -> SharedLinkRepository {
-        let storage = dependencies.storage
-        let sessionVault = dependencies.sessionVault
-        let client = dependencies.client
-
-        let shareCreator = ShareCreator(storage: storage, sessionVault: sessionVault, cloudShareCreator: client.createShare, signersKitFactory: sessionVault, moc: storage.backgroundContext)
-        let publicLinkCreator = RemoteCachingPublicLinkCreator(client: client, storage: storage, signersKitFactory: sessionVault)
-        let publicLinkProvider = RemoteCachingPublicLinkProvider(client: client, storage: storage, shareCreator: shareCreator, publicLinkCreator: publicLinkCreator)
-        let publicLinkUpdater = RemoteCachingPublicLinkUpdater(client: client, storage: storage, signersKitFactory: sessionVault)
-        let shareDeleter = RemoteCachingShareDeleter(client: client, storage: storage)
-        let publicLinkDeleter = RemoteCachingPublicLinkDeleter(client: client, storage: storage, shareDeleter: shareDeleter)
-        return SharingManager(provider: publicLinkProvider, updater: publicLinkUpdater, deleter: publicLinkDeleter, shareDeleter: shareDeleter)
+        SharingManager.make(client: dependencies.client, storage: dependencies.storage, sessionVault: dependencies.sessionVault)
     }
     
     func makeInvitationView(
